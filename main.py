@@ -8,19 +8,16 @@ from pygame import mixer
 #initialize pygame module
 pygame.init()
 
-
 # creating the game window 
 screen = pygame.display.set_mode((800, 600))
 background = pygame.image.load('Space/bg2.jpg')
 mixer.music.load('Space/bgmusic.wav')
 mixer.music.play(-1)                        # plays the sound on loop
 
-
 # Title and icon of the window
 pygame.display.set_caption("My First PyGame")
 icon = pygame.image.load('Space/car-icon.png')       # from flaticon website
 pygame.display.set_icon(icon)
-
 
 # Player
 playerImg = pygame.image.load('Space/spaceship.png')
@@ -45,7 +42,6 @@ for i in range(num_enemies):
     enemyX_change.append(1)
     enemyY_change.append(45)
 
-    
 # for Bullet
 bulletImg = pygame.image.load('Space/bullet1.png')
 bulletX = 0
@@ -53,7 +49,6 @@ bulletY = playerY
 bulletX_change = 0.5
 bulletY_change = 2.5
 bullet_state = "ready"
-
 
 def player(xPos, yPos):
     screen.blit(playerImg, (xPos, yPos))       # blit() means to draw
@@ -70,7 +65,7 @@ def fire_bullet(xPos, yPos):
 def isCollision(enemyX, enemyY, bulletX, bulletY):
     distance = math.sqrt(math.pow((bulletX - enemyX), 2) + math.pow((bulletY - enemyY), 2))
 
-    if distance < 20:
+    if distance < 15:
         return True
     return False
 
@@ -85,13 +80,20 @@ def show_score(x, y):
     screen.blit(score, (x, y))
 
 gameOver_font = pygame.font.Font('Space/Squids.ttf', 48)
+over = False
+game_over_sound = mixer.Sound('Space/gameover.wav')
+
 def gameOver():
     over_text = gameOver_font.render("Game Over :(", True, (240, 145, 78))
     screen.blit(over_text, (200, 250))
+    global over
+    over = True
+        
 
 
 # game loop, window exits or stays
 running = True
+count = 0
 while running:
 
     screen.fill((0, 0, 0))                          # RGB background of screen
@@ -100,6 +102,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+            
     
         # keystroke events are pygame events and gets stored in "pygame.event.get()"
         # pygame.KEYDOWN means any key or button has been pressed on the keyboard
@@ -137,7 +140,6 @@ while running:
     playerX += playerX_change
     playerY += playerY_change
 
-    
     # creating spaceship's allowed movement boundary
     if playerX <= 0 :
         playerX = 0
@@ -149,15 +151,19 @@ while running:
     elif playerY >= 500:
         playerY = 500
     
-    
     # creating movement mechanics of enemies
-
+    
     for i in range(num_enemies):
-
-        if enemyY[i] > 440:
+        
+        if enemyY[i] > 450:
             for j in range(num_enemies):
                 enemyY[j] = 2000                    # remove that from the viewable screen
             gameOver()
+            mixer.music.stop()
+            # print("game over", count)
+            count+=1
+            if count==1:
+                game_over_sound.play()
             break
 
         enemyX[i] += enemyX_change[i]
@@ -191,7 +197,9 @@ while running:
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_change
 
+
     player(playerX, playerY)
     show_score(textX, textY)
+      
 
     pygame.display.update()                         # necessary to update display everytime a change is made
