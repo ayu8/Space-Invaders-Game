@@ -10,17 +10,17 @@ pygame.init()
 
 # creating the game window 
 screen = pygame.display.set_mode((800, 600))
-background = pygame.image.load('Space/bg2.jpg')
-mixer.music.load('Space/bgmusic.wav')
+background = pygame.image.load('bg2.jpg')
+mixer.music.load('bgmusic.wav')
 mixer.music.play(-1)                        # plays the sound on loop
 
 # Title and icon of the window
 pygame.display.set_caption("My First PyGame")
-icon = pygame.image.load('Space/car-icon.png')       # from flaticon website
+icon = pygame.image.load('car-icon.png')       # from flaticon website
 pygame.display.set_icon(icon)
 
 # Player
-playerImg = pygame.image.load('Space/spaceship.png')
+playerImg = pygame.image.load('spaceship.png')
 playerX = 368
 # X coordinate of player; (800px - 64px) / 2; screen is 800px wide and picture is 64px wide
 playerY = 500
@@ -36,14 +36,14 @@ enemyX_change = []
 enemyY_change = []
 
 for i in range(num_enemies):
-    enemyImg.append(pygame.image.load('Space/alien2.png'))
+    enemyImg.append(pygame.image.load('alien2.png'))
     enemyX.append(random.randint(0, 735))
     enemyY.append(random.randint(20, 100))
     enemyX_change.append(1)
     enemyY_change.append(45)
 
 # for Bullet
-bulletImg = pygame.image.load('Space/bullet1.png')
+bulletImg = pygame.image.load('bullet1.png')
 bulletX = 0
 bulletY = playerY
 bulletX_change = 0.5
@@ -71,7 +71,7 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
 
 # Score
 current_score = 0
-font = pygame.font.Font('Space/Squids.ttf', 32)
+font = pygame.font.Font('Squids.ttf', 32)
 textX = 10
 textY = 10
 
@@ -79,9 +79,9 @@ def show_score(x, y):
     score = font.render("Score: " + str(current_score), True, (255,255,255))
     screen.blit(score, (x, y))
 
-gameOver_font = pygame.font.Font('Space/Squids.ttf', 48)
+gameOver_font = pygame.font.Font('Squids.ttf', 48)
 over = False
-game_over_sound = mixer.Sound('Space/gameover.wav')
+game_over_sound = mixer.Sound('gameover.wav')
 
 def gameOver():
     over_text = gameOver_font.render("Game Over :(", True, (240, 145, 78))
@@ -120,7 +120,7 @@ while running:
                 playerY_change = 1
             elif event.key == pygame.K_SPACE:
                 if bullet_state is "ready":
-                    bullet_sound = mixer.Sound('Space/bullet.wav')
+                    bullet_sound = mixer.Sound('bullet.wav')
                     bullet_sound.play()
                     bulletX = playerX
                     bulletY = playerY
@@ -141,7 +141,7 @@ while running:
     playerY += playerY_change
 
     # creating spaceship's allowed movement boundary
-    if playerX <= 0 :
+    if playerX <= 0:
         playerX = 0
     elif playerX >= 736:
         playerX = 736
@@ -179,7 +179,7 @@ while running:
         collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
 
         if collision:
-            bang_sound = mixer.Sound('Space/collision.wav')
+            bang_sound = mixer.Sound('collision.wav')
             bang_sound.play()
             bullet_state = "ready"
             current_score += 1
